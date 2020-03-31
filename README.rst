@@ -2,7 +2,7 @@
 Introduction
 ============
 
-This is a MicroPython fork of the Adafruit CircuitPython SGP30 library (https://github.com/adafruit/Adafruit_CircuitPython_SGP30). The library is designed too interfact with a SGP30 module / breakout board over SPI, and retrieve Total Volatile Organic Compounds (TVOC) and Equivalent Carbon Dioxide (CO2eq) readings.
+This is a MicroPython fork of the Adafruit CircuitPython SGP30 library (https://github.com/adafruit/Adafruit_CircuitPython_SGP30). The library is designed to interface with a SGP30 module / breakout board over I2C, and retrieve Total Volatile Organic Compounds (TVOC) and Equivalent Carbon Dioxide (CO2eq) readings.
 
 So far, it has been tested only with ESP32 MicroPython firmware.
 
