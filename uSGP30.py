@@ -40,7 +40,9 @@ Implementation Notes
 * MicroPython:
     https://github.com/micropython/micropython
 
+* Modified by Alan Peaty for MicroPython port.
 """
+
 from utime import sleep_ms
 from micropython import const
 
@@ -99,9 +101,10 @@ class SGP30:
     :param i2c: The "I2C" object to use. This is the only required parameter.
     :param int address: (optional) The I2C address of the device.
     :param boolean chip_test: (optional) Whether to run on-chip test during initialisation.
+    :param boolean init_algo: (optional) Whether to initialise SGP30 algorithm / baseline.
     """
 
-    def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, chip_test=True):
+    def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, chip_test=True, init_algo=True):
         """ Initialise the sensor and display stats. """
         self._i2c = i2c
         if addr not in self._i2c.scan():
@@ -118,7 +121,8 @@ class SGP30:
             "Serial ID: " + str(self.serial) + "\n" +
             "Feature set: " + str(self.feature_set)
         )
-        self.iaq_init()
+        if init_algo:
+            self.iaq_init()
 
     def iaq_init(self):
         """ Initialise the IAQ algorithm. """

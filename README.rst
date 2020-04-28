@@ -16,6 +16,7 @@ Usage Notes
 .. code-block:: python
 
 	import uSGP30
+	import machine
 
 	I2C_SCL_GPIO = const(18)
 	I2C_SDA_GPIO = const(19)
@@ -31,3 +32,21 @@ To read from the sensor:
 .. code-block:: python
 
     co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
+
+Note the various calibration / initialisation parameters documented in the Sensirion SGP30 Driver Integration Guide. Specifically, there is a 15-second device initialisation period, and a recommended 12-hour early operation phase. In order to prevent the reinitialisation of the SGP30 algorithm / baseline after each microprocessor deepsleep, instantiate the uSGP30 class with the :code:`init_algo` set to :code:`False`. If initialising the sensor, cater for the 15 second initialisation period.
+
+.. code-block:: python
+
+    if machine.reset_cause() == machine.DEEPSLEEP_RESET:
+        initialise_sgp30_algo = False
+    else:
+        initialise_sgp30_algo = True
+    sgp30 = uSGP30.SGP30(i2c, init_algo=initialise_sgp30_algo)
+    if initialise_sgp30_algo:
+        sleep_ms(SGP30_INIT_MS)
+
+Documentation
+=========================
+
+* `Sensirion SGP30 Datasheet <docs/Sensirion_Gas_Sensors_SGP30_Datasheet.pdf>`_
+* `Sensirion SGP30 Driver Integration Guide <docs/Sensirion_Gas_Sensors_SGP30_Driver-Integration-Guide_SW_I2C.pdf>`_
