@@ -37,6 +37,7 @@ Note the various calibration / initialisation parameters documented in the Sensi
 
 .. code-block:: python
 
+	SGP30_INIT_MS = const(15000)
     if machine.reset_cause() == machine.DEEPSLEEP_RESET:
         initialise_sgp30_algo = False
     else:
