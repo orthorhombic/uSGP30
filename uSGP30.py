@@ -70,7 +70,7 @@ SGP30_CMD_SET_IAQ_BASELINE_WORDS = const(0)
 SGP30_CMD_SET_IAQ_BASELINE_MAX_MS = const(10)
 SGP30_CMD_SET_ABSOLUTE_HUMIDITY_HEX = [0x20, 0x61]
 SGP30_CMD_SET_ABSOLUTE_HUMIDITY_WORDS = const(0)
-SGP30_CMD_SET_ABSOLUTE_HUMIDITY_MAX_MS = const(10) 
+SGP30_CMD_SET_ABSOLUTE_HUMIDITY_MAX_MS = const(10)
 SGP30_CMD_MEASURE_TEST_HEX = [0x20, 0x32]
 SGP30_CMD_MEASURE_TEST_WORDS = const(1)
 SGP30_CMD_MEASURE_TEST_MAX_MS = const(220)
@@ -105,7 +105,7 @@ class SGP30:
     """
 
     def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, chip_test=True, init_algo=True):
-        """ Initialise the sensor and display stats. """
+        """ Initialise the sensor and display stats """
         self._i2c = i2c
         if addr not in self._i2c.scan():
             raise IOError("No SGP30 device found on I2C bus")
@@ -123,9 +123,10 @@ class SGP30:
         )
         if init_algo:
             self.iaq_init()
+            print("Initialised sensor algorithm")
 
     def iaq_init(self):
-        """ Initialise the IAQ algorithm. """
+        """ Initialise the IAQ algorithm """
         self._i2c_read_words_from_cmd(
             SGP30_CMD_IAQ_INIT_HEX,
             SGP30_CMD_IAQ_INIT_MAX_MS,
@@ -141,7 +142,7 @@ class SGP30:
         )
 
     def get_iaq_baseline(self):
-        """ Retreive the IAQ algorithm baseline for CO2eq and TVOC. """
+        """ Retreive the IAQ algorithm baseline for CO2eq and TVOC """
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_IAQ_BASELINE_HEX,
             SGP30_CMD_GET_IAQ_BASELINE_MAX_MS,
@@ -149,7 +150,7 @@ class SGP30:
         )
 
     def set_iaq_baseline(self, co2eq, tvoc):
-        """ Set the previously recorded IAQ algorithm baseline for CO2eq and TVOC. """
+        """ Set the previously recorded IAQ algorithm baseline for CO2eq and TVOC """
         if co2eq == 0 and tvoc == 0:
             raise ValueError("Invalid baseline values used")
         buffer = []
@@ -163,30 +164,34 @@ class SGP30:
             SGP30_CMD_SET_IAQ_BASELINE_WORDS
         )
 
+    # TODO: Set absolute humidity compensation
+
     def measure_test(self):
-        """ Run on-chip selt test. """
+        """ Run on-chip selt test """
         return self._i2c_read_words_from_cmd(
-                SGP30_CMD_MEASURE_TEST_HEX,
-                SGP30_CMD_MEASURE_TEST_MAX_MS,
-                SGP30_CMD_MEASURE_TEST_WORDS
-            )[0]
-    
+            SGP30_CMD_MEASURE_TEST_HEX,
+            SGP30_CMD_MEASURE_TEST_MAX_MS,
+            SGP30_CMD_MEASURE_TEST_WORDS
+        )[0]
+
     def get_feature_set(self):
+        """ Retrieve feature set of sensor """
         return self._i2c_read_words_from_cmd(
-                SGP30_CMD_GET_FEATURE_SET_HEX,
-                SGP30_CMD_GET_FEATURE_SET_MAX_MS,
-                SGP30_CMD_GET_FEATURE_SET_WORDS
-            )[0]
+            SGP30_CMD_GET_FEATURE_SET_HEX,
+            SGP30_CMD_GET_FEATURE_SET_MAX_MS,
+            SGP30_CMD_GET_FEATURE_SET_WORDS
+        )[0]
 
     def measure_raw(self):
-        """ Returns raw H2 and Ethanol signals, used for part verification and testing. """
+        """ Returns raw H2 and Ethanol signals, used for part verification and testing """
         return self._i2c_read_words_from_cmd(
-                SGP30_CMD_MEASURE_RAW_HEX,
-                SGP30_CMD_MEASURE_RAW_MAX_MS,
-                SGP30_CMD_MEASURE_RAW_WORDS
-            )
-            
+            SGP30_CMD_MEASURE_RAW_HEX,
+            SGP30_CMD_MEASURE_RAW_MAX_MS,
+            SGP30_CMD_MEASURE_RAW_WORDS
+        )
+
     def get_serial(self):
+        """ Retrieve sensor serial """
         serial = self.serial = self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_SERIAL_ID_HEX,
             SGP30_CMD_GET_SERIAL_ID_MAX_MS,
@@ -196,36 +201,36 @@ class SGP30:
 
     @property
     def co2eq(self):
-        """ Carbon Dioxide Equivalent in parts per million (ppm). """
+        """ Carbon Dioxide Equivalent in parts per million (ppm) """
         return self.measure_iaq()[0]
 
     @property
     def baseline_co2eq(self):
-        """ Carbon Dioxide Equivalent baseline value. """
+        """ Carbon Dioxide Equivalent baseline value """
         return self.get_iaq_baseline()[0]
 
     @property
     def tvoc(self):
-        """ Total Volatile Organic Compound in parts per billion (ppb). """
+        """ Total Volatile Organic Compound in parts per billion (ppb) """
         return self.measure_iaq()[1]
 
     @property
     def baseline_tvoc(self):
-        """ Total Volatile Organic Compound baseline value. """
+        """ Total Volatile Organic Compound baseline value """
         return self.get_iaq_baseline()[1]
 
     @property
     def raw_h2(self):
-        """ Raw H2 signal. """
+        """ Raw H2 signal """
         return self.measure_raw()[0]
 
     @property
     def raw_ethanol(self):
-        """ Raw Ethanol signal. """
+        """ Raw Ethanol signal """
         return self.measure_raw()[1]
 
     def _i2c_read_words_from_cmd(self, command, delay, reply_size):
-        """ Run an SGP command query, get a reply and CRC results if necessary. """
+        """ Run an SGP command query, get a reply and CRC results if necessary """
         self._i2c.writeto(self.addr, bytes(command))
         sleep_ms(delay)
         if not reply_size:

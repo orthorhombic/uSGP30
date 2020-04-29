@@ -33,6 +33,8 @@ To read from the sensor:
 
     co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
 
+.. image:: docs/3a_sgp30_iaq_loop.png
+
 Note the various calibration / initialisation parameters documented in the Sensirion SGP30 Driver Integration Guide. Specifically, there is a 15-second device initialisation period, and a recommended 12-hour early operation phase. In order to prevent the reinitialisation of the SGP30 algorithm / baseline after each microprocessor deepsleep, instantiate the uSGP30 class with the :code:`init_algo` set to :code:`False`. If initialising the sensor, cater for the 15 second initialisation period.
 
 .. code-block:: python
@@ -45,6 +47,13 @@ Note the various calibration / initialisation parameters documented in the Sensi
     sgp30 = uSGP30.SGP30(i2c, init_algo=initialise_sgp30_algo)
     if initialise_sgp30_algo:
         sleep_ms(SGP30_INIT_MS)
+
+Blog Post
+=========================
+
+The usage of this sensor and module is described in the following `Rosie the Red Robot <https://www.rosietheredrobot.com>` blog post:
+
+* `Unreal TV <https://www.rosietheredrobot.com/2020/04/unreal-tv.html>`_
 
 Documentation
 =========================
