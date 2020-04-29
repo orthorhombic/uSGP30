@@ -190,6 +190,11 @@ class SGP30:
             SGP30_CMD_MEASURE_RAW_WORDS
         )
 
+    # TODO: Get TVOC inceptive baseline
+    # TODO: Set TVOC baseline
+
+    # TODO: Soft Reset (datasheet section 6.4)
+
     def get_serial(self):
         """ Retrieve sensor serial """
         serial = self.serial = self._i2c_read_words_from_cmd(
