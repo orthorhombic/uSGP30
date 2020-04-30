@@ -119,11 +119,11 @@ class SGP30:
             "SGP30 device discovered...\n" +
             "I2C address: " + str(self.addr) + "\n" +
             "Serial ID: " + str(self.serial) + "\n" +
-            "Feature set: " + str(self.feature_set)
+            "Feature set: " + str(self.feature_set) + "\n" +
+            "Initialise algo: " + str(init_algo)
         )
         if init_algo:
             self.iaq_init()
-            print("Initialised sensor algorithm")
 
     def iaq_init(self):
         """ Initialise the IAQ algorithm """

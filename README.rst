@@ -17,21 +17,39 @@ Usage Notes
 
 	import uSGP30
 	import machine
+	import time
 
 	I2C_SCL_GPIO = const(18)
 	I2C_SDA_GPIO = const(19)
 
-	i2c = machine.I2C(scl=machine.Pin(I2C_SCL_GPIO, machine.Pin.OUT), sda=machine.Pin(I2C_SDA_GPIO, machine.Pin.OUT), freq=400000)
+	i2c = machine.I2C(
+		scl=machine.Pin(I2C_SCL_GPIO, machine.Pin.OUT),
+		sda=machine.Pin(I2C_SDA_GPIO, machine.Pin.OUT),
+		freq=400000
+	)
 	sgp30 = uSGP30.SGP30(i2c)
 
 Reading from the Sensor
 ------------------------
 
-To read from the sensor:
+To read (and print) the CO2eq and TVOC values from the sensor:
 
 .. code-block:: python
 
     co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
+    print(co2eq_ppm, tvoc_ppb)
+
+Measurements can be taken periodically, for example, in a loop:
+
+.. code-block:: python
+
+	while True:
+	    co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
+	    print(
+	        "Carbon Dioxide Equivalent (ppm): " + str(co2eq_ppm) + "\n" +
+	        "Total Volatile Organic Compound (ppb): " + str(tvoc_ppb)
+	    )
+	    time.sleep(5)
 
 .. image:: docs/3a_sgp30_iaq_loop.png
 
