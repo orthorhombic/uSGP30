@@ -21,7 +21,7 @@ Usage Notes
 	I2C_SCL_GPIO = const(18)
 	I2C_SDA_GPIO = const(19)
 
-	i2c = machine.I2C(scl=Pin(I2C_SCL_GPIO, Pin.OUT), sda=Pin(I2C_SDA_GPIO, Pin.OUT), freq=400000)
+	i2c = machine.I2C(scl=machine.Pin(I2C_SCL_GPIO, machine.Pin.OUT), sda=machine.Pin(I2C_SDA_GPIO, machine.Pin.OUT), freq=400000)
 	sgp30 = uSGP30.SGP30(i2c)
 
 Reading from the Sensor
