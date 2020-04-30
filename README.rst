@@ -53,6 +53,10 @@ Measurements can be taken periodically, for example, in a loop:
 
 .. image:: docs/3a_sgp30_iaq_loop.png
 
+Place the sensor for example above the cooking area in the kitchen, and you should be able to obtain some exciting readings.
+
+.. image:: docs/4g_matplotlit_ppm_ppb.png
+
 Note the various calibration / initialisation parameters documented in the Sensirion SGP30 Driver Integration Guide. Specifically, there is a 15-second device initialisation period, and a recommended 12-hour early operation phase. In order to prevent the reinitialisation of the SGP30 algorithm / baseline after each microprocessor deepsleep, instantiate the uSGP30 class with the :code:`init_algo` set to :code:`False`. If initialising the sensor, cater for the 15 second initialisation period.
 
 .. code-block:: python
