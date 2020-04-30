@@ -164,7 +164,17 @@ class SGP30:
             SGP30_CMD_SET_IAQ_BASELINE_WORDS
         )
 
-    # TODO: Set absolute humidity compensation
+    def set_iaq_baseline(self, absolute_humidity):
+        """ Set absolute humidity compensation"""
+        buffer = []
+        arr = [absolute_humidity >> 8, absolute_humidity & 0xFF]
+        arr.append(generate_crc(arr))
+        buffer += arr
+        self._i2c_read_words_from_cmd(
+            SGP30_CMD_SET_IAQ_BASELINE_HEX + buffer,
+            SGP30_CMD_SET_IAQ_BASELINE_MAX_MS,
+            SGP30_CMD_SET_IAQ_BASELINE_WORDS
+        )
 
     def measure_test(self):
         """ Run on-chip selt test """
