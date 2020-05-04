@@ -101,9 +101,9 @@ Used in Conjunction with Deepsleep
 Note the various calibration / initialisation parameters documented in the Sensirion SGP30 Driver Integration Guide. Specifically, there is a 15-second device initialisation period, and a recommended 12-hour early operation phase. In order to prevent the reinitialisation of the SGP30 algorithm / baseline after each microprocessor deepsleep, instantiate the uSGP30 class with the :code:`iaq_init` set to :code:`False`. If initialising the sensor, cater for the 15 second initialisation period.
 
 .. code-block:: python
-
+	
 	import machine
-
+	
     SGP30_INIT_MS = const(15000)
     if machine.reset_cause() == machine.DEEPSLEEP_RESET:
         initialise_sgp30_algo = False
