@@ -79,14 +79,14 @@ Baselines calculated by the SGP30 sensor during the course of its operation can 
 
 	BASELINE_FILE = "sgp30_iaq_baseline.txt"
 	
-	current_baseline = uSGP30.get_iaq_baseline()
+	current_baseline = sgp30.get_iaq_baseline()
 	with open(BASELINE_FILE, "w") as file:
 	    file.write(current_baseline)
 	
 	# After power up / soft reset...
 	with open(BASELINE_FILE, "r") as file:
 	    current_baseline = file.read()
-	uSGP30.set_iaq_baseline(current_baseline)
+	sgp30.set_iaq_baseline(current_baseline)
 
 Testing
 ==========
