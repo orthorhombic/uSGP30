@@ -43,6 +43,7 @@ Implementation Notes
 * Modified by Alan Peaty for MicroPython port.
 """
 
+from math import exp
 from utime import sleep_ms
 from micropython import const
 
@@ -100,11 +101,11 @@ class SGP30:
 
     :param i2c: The "I2C" object to use. This is the only required parameter.
     :param int address: (optional) The I2C address of the device.
-    :param boolean chip_test: (optional) Whether to run on-chip test during initialisation.
-    :param boolean init_algo: (optional) Whether to initialise SGP30 algorithm / baseline.
+    :param boolean measure_test: (optional) Whether to run on-chip test during initialisation.
+    :param boolean iaq_init: (optional) Whether to initialise SGP30 algorithm / baseline.
     """
 
-    def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, chip_test=True, init_algo=True):
+    def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, measure_test=True, iaq_init=True):
         """ Initialise the sensor and display stats """
         self._i2c = i2c
         if addr not in self._i2c.scan():
@@ -112,7 +113,7 @@ class SGP30:
         self.addr = addr
         self.serial = self.get_serial()
         self.feature_set = self.get_feature_set()
-        if chip_test:
+        if measure_test:
             if SGP30_MEASURE_TEST_PASS != self.measure_test():
                 raise RuntimeError("Device failed the on-chip test")
         print(
@@ -120,9 +121,9 @@ class SGP30:
             "I2C address: " + str(self.addr) + "\n" +
             "Serial ID: " + str(self.serial) + "\n" +
             "Feature set: " + str(self.feature_set) + "\n" +
-            "Initialise algo: " + str(init_algo)
+            "Initialise algo: " + str(iaq_init)
         )
-        if init_algo:
+        if iaq_init:
             self.iaq_init()
 
     def iaq_init(self):
@@ -164,7 +165,7 @@ class SGP30:
             SGP30_CMD_SET_IAQ_BASELINE_WORDS
         )
 
-    def set_iaq_baseline(self, absolute_humidity):
+    def set_absolute_humidity(self, absolute_humidity):
         """ Set absolute humidity compensation"""
         buffer = []
         arr = [absolute_humidity >> 8, absolute_humidity & 0xFF]
@@ -263,7 +264,7 @@ class SGP30:
 
 def generate_crc(data):
     """ 8-bit CRC algorithm for checking data.
-    Calculation described in section 6.6 of SGP30 datasheet. """
+    Calculation described in section 6.6 of SGP30 datasheet """
     crc = SGP30_CRC8_INIT
     # Calculates 8-Bit CRC checksum with given polynomial
     for byte in data:
@@ -274,3 +275,16 @@ def generate_crc(data):
             else:
                 crc <<= 1
     return crc & 0xFF
+
+def convert_r_to_a_humidity(temp_c, r_humidity_perc, fixed_point=True):
+    """ Converts relative to absolute humidity as per the equation
+    found in datasheet """
+    a_humidity_gm3 = 216.7 * (
+        (r_humidity_perc / 100 * 6.112 * exp(17.62 * temp_c / (243.12 + temp_c))) /
+        (273.15 + temp_c)
+    )
+    # Return in 8.8 bit fixed point format (for setting humidity compensation), if not
+    # simply return the calculated value in g/m^3
+    if fixed_point:
+        a_humidity_gm3 = (int(a_humidity_gm3) << 8) + (int(a_humidity_gm3 % 1 * 256))
+    return a_humidity_gm3
