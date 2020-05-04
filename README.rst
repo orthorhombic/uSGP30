@@ -77,15 +77,17 @@ Baselines calculated by the SGP30 sensor during the course of its operation can 
 
 .. code-block:: python
 
+	import ujson
+	
 	BASELINE_FILE = "sgp30_iaq_baseline.txt"
 	
 	current_baseline = sgp30.get_iaq_baseline()
 	with open(BASELINE_FILE, "w") as file:
-	    file.write(current_baseline)
+	    file.write(str(current_baseline))
 	
 	# After power up / soft reset...
 	with open(BASELINE_FILE, "r") as file:
-	    current_baseline = file.read()
+	    current_baseline = ujson.loads(file.read())
 	sgp30.set_iaq_baseline(current_baseline)
 
 Testing
