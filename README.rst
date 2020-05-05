@@ -119,8 +119,8 @@ Example - Humidity Compensation
 	temp_c = 25
 	r_humidity_perc = 50
 	
-	a_humidity_perc = uSGP30.convert_r_to_a_humidity(temp_c, r_humidity_perc, fixed_point=False)
-	print(a_humidity_perc)
+	a_humidity_perc_readable = uSGP30.convert_r_to_a_humidity(temp_c, r_humidity_perc, fixed_point=False)
+	print(a_humidity_perc_readable)
 	a_humidity_perc = uSGP30.convert_r_to_a_humidity(temp_c, r_humidity_perc)
 	sgp30.set_absolute_humidity(a_humidity_perc)
 
