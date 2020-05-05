@@ -2,18 +2,18 @@
 Introduction
 ============
 
-This is a MicroPython fork of the `Adafruit CircuitPython SGP30 library <https://github.com/adafruit/Adafruit_CircuitPython_SGP30>`_. The library is designed to interface with a SGP30 module / breakout board over I2C, and retrieve Total Volatile Organic Compounds (TVOC) and Equivalent Carbon Dioxide (CO2eq) readings.
+This is a MicroPython fork of the `Adafruit CircuitPython SGP30 library <https://github.com/adafruit/Adafruit_CircuitPython_SGP30>`_. This library is designed to interface with a SGP30 module / breakout board over I2C, and retrieve Total Volatile Organic Compounds (TVOC) and Equivalent Carbon Dioxide (CO2eq) readings.
 
-This driver has removed the original Adafruit library's dependency on the :code:`adafruit_bus_device.i2c_device` module, and supports MicroPython's native :code:`machine.I2C` implementation directly. It has also widened support for SGP30 commands not present in the original library, specifically for "measure test" and "humidity compensation" functionality.
+This particular library has removed the original Adafruit library's dependency on the :code:`adafruit_bus_device.i2c_device` module, and supports MicroPython's native :code:`machine.I2C` implementation directly. It has also widened support for SGP30 commands not present in the original library, specifically for "measure test" and "humidity compensation" functionalities (and more).
 
 .. image:: docs/pimoroni_sgp30.JPG
 
 Prerequisites
 ---------------
 
-* So far, this library has been tested only with ESP32 MicroPython firmware (v1.11 and above).
-* (Optional) To perform humidity compensation, another sensor capable of taking temperature and relative humidity measurements is required (such as 1-Wire DHT11/22 or I2C BMP280 devices).
-* (Optional) To capture SGP30 baselines for persistance across restarts / soft resets, non-volatile memory is needed (for example, built-in flash, or external SDCard or EEPROM).
+* So far, this library has been tested only with ESP32 MicroPython firmware (v1.11 and above). Various ESP-WROOM-32 development boards have been used.
+* (Optional) To perform humidity compensation, another sensor capable of taking temperature and relative humidity measurements is required (such as 1-Wire-based DHT11/22 or I2C-based BMP280 devices).
+* (Optional) To capture SGP30 baselines for persistance across sensor poer-ups / soft resets, non-volatile memory is needed (for example, built-in flash, or external SD card or EEPROM).
 
 Hardware
 ---------------
