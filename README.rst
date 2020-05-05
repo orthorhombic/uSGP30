@@ -201,6 +201,9 @@ Place the sensor for example above the cooking area in the kitchen, and you shou
 
 For data to be available outside of the embedded device, use MQTT to publish the readings over the network or store them locally on a SD card.
 
+Test Script
+-------------------------------------
+
 A test script :code:`uSGP30_test.py` is included in this library.
 
 Example - Run uSGP30_test.py Test Script
