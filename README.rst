@@ -173,7 +173,7 @@ Place the sensor for example above the cooking area in the kitchen, and you shou
 Used in Conjunction with Deepsleep
 -------------------------------------
 
-.. note::
+.. warning::
 	Note the various calibration / initialisation parameters documented in the Sensirion SGP30 Driver Integration Guide. Specifically, there is a 15-second device initialisation period, and a recommended 12-hour early operation phase. Furthermore, for optimal establishment of the internal baseline, it is suggested that a measurement is taken every second. As such, it is not believed that a microprocessor will be able to meet these criteria with extended durations of deepsleep in between readings.
 
 For experimental testing purposes, the :code:`SGP30` class can be instantiated with the :code:`iaq_init=False` flag set. This will not instruct the SGP30 sensor to initialise its baselines (for example, if the sensor itself has remained powered throughout, even if the microprocessor has not).
@@ -207,4 +207,4 @@ Documentation
 
 * `Sensirion SGP30 Datasheet <docs/Sensirion_Gas_Sensors_SGP30_Datasheet.pdf>`_
 * `Sensirion SGP30 Driver Integration Guide <docs/Sensirion_Gas_Sensors_SGP30_Driver-Integration-Guide_SW_I2C.pdf>`_
-* `Sensirion SGP30 Driver Integration Guide <docs/adafruit-sgp30-gas-tvoc-eco2-mox-sensor.pdf>`_
+* `Adafruit SGP30 Guide <docs/adafruit-sgp30-gas-tvoc-eco2-mox-sensor.pdf>`_
