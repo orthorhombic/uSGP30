@@ -20,11 +20,12 @@ Hardware
 
 SGP30 has an I2C interface. For all remaining examples, the following pins of an ESP32 development are used.
 
-=========	=========
-SGP30 Pin	ESP32 Pin
-=========	=========
-I2C Data	GPIO 18
-I2C Clock	GPIO 19
+========== ==========
+SGP30 Pin  ESP32 Pin
+========== ==========
+I2C Data   GPIO 18
+I2C Clock  GPIO 19
+========== ==========
 
 Depending on the SGP30 breakout board, options for power supply (and input voltages tolerated) will vary.
 
