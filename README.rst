@@ -29,7 +29,7 @@ I2C Clock  GPIO 19
 
 Depending on the SGP30 breakout board, options for power supply (and input voltages tolerated) will vary.
 
-.. image:: docs/pimoroni_sgp30_pins.JPG
+.. image:: docs/pimoroni_sgp30_pins.jpg
 
 Operation
 ============
