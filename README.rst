@@ -12,7 +12,7 @@ Prerequisites
 ---------------
 
 * So far, this library has been tested only with ESP32 MicroPython firmware (v1.11 and above). Various ESP-WROOM-32 DevKitC development boards have been used.
-* (Optional) To perform humidity compensation, another sensor capable of taking temperature and relative humidity measurements is required (such as 1-Wire-based DHT11/22, I2C-based BMP280 devices or Sensirion's own SHT range).
+* (Optional) To perform humidity compensation, another sensor capable of taking temperature and relative humidity measurements is required (such as 1-Wire-based DHT11/22, I2C-based BME280 devices or Sensirion's own SHT range).
 * (Optional) To capture SGP30 baselines for persistence across sensor power-ups / soft resets, non-volatile memory is needed (for example, built-in flash, or external SD card or EEPROM).
 
 Hardware
