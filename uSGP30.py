@@ -166,7 +166,8 @@ class SGP30:
         )
 
     def set_absolute_humidity(self, absolute_humidity):
-        """ Set absolute humidity compensation"""
+        """ Set absolute humidity compensation. To disable,
+        set 0. """
         buffer = []
         arr = [absolute_humidity >> 8, absolute_humidity & 0xFF]
         arr.append(generate_crc(arr))
@@ -203,7 +204,6 @@ class SGP30:
 
     # TODO: Get TVOC inceptive baseline
     # TODO: Set TVOC baseline
-
     # TODO: Soft Reset (datasheet section 6.4)
 
     def get_serial(self):
