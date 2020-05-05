@@ -11,7 +11,7 @@ This particular library has removed the original Adafruit library's dependency o
 Prerequisites
 ---------------
 
-* So far, this library has been tested only with ESP32 MicroPython firmware (v1.11 and above). Various ESP-WROOM-32 development boards have been used.
+* So far, this library has been tested only with ESP32 MicroPython firmware (v1.11 and above). Various ESP-WROOM-32 DevKitC development boards have been used.
 * (Optional) To perform humidity compensation, another sensor capable of taking temperature and relative humidity measurements is required (such as 1-Wire-based DHT11/22 or I2C-based BMP280 devices).
 * (Optional) To capture SGP30 baselines for persistance across sensor poer-ups / soft resets, non-volatile memory is needed (for example, built-in flash, or external SD card or EEPROM).
 
@@ -20,14 +20,14 @@ Hardware
 
 SGP30 has an I2C interface. For all remaining examples, the following pins of an ESP32 development are used.
 
-========== ==========
-SGP30 Pin  ESP32 Pin
-========== ==========
-I2C Data   GPIO 18
-I2C Clock  GPIO 19
-========== ==========
+================ ==========
+SGP30 Pin        ESP32 Pin
+================ ==========
+I2C Data (SDA)   GPIO 18
+I2C Clock (SCL)  GPIO 19
+================ ==========
 
-Depending on the SGP30 breakout board, options for power supply (and input voltages tolerated) will vary.
+Depending on the SGP30 breakout board you have, options for power supply (and maximum input voltages tolerated) will vary.
 
 .. image:: docs/pimoroni_sgp30_pins.jpg
 
