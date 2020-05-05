@@ -179,7 +179,7 @@ class SGP30:
         )
 
     def measure_test(self):
-        """ Runs on-chip selt test """
+        """ Runs on-chip self test """
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_MEASURE_TEST_HEX,
             SGP30_CMD_MEASURE_TEST_MAX_MS,

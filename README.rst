@@ -124,14 +124,14 @@ Example - Humidity Compensation
 	a_humidity_perc = uSGP30.convert_r_to_a_humidity(temp_c, r_humidity_perc)
 	sgp30.set_absolute_humidity(a_humidity_perc)
 
-Humidity compenstation is optional. However, if applied, it should be set immediately after sensor initialisation, and in between each call of :code:`measure_iaq()`.
+Humidity compenstation is optional. However, if applied, it should be set immediately after sensor initialisation, and in between each call of :code:`measure_iaq()` as explained in `Main Application`_.
 
 Get and Set Baselines
 ------------------------
 
 Current algorithm baselines calculated by the SGP30 sensor during the course of its operation can be read using the :code:`get_iaq_baseline()` method. In order for this baseline to persist after subsequent sensor power-ups or soft resets, the baseline values can be retrieved and stored in non-volatile memory, and set after the next power-up / soft reset using the :code:`set_iaq_baseline()` method. If not, a 12-hour early operation phase is required again for the sensor to re-establish its baseline. Only baselines *younger* than a week is valid.
 
-The simplest way to achieve this for an offline ESP32 device, with no additional hardware, would be to simply store these values in a file on the built-in flash memory presented as a filesystem. Other alternatives involving additional hardware would be an EEPROM or MicroSD devices. Likewise, for connected ESP32 devices, the baseline *could* be stored elsewhere on the network.
+The simplest way to achieve this for an offline ESP32 device, with no additional hardware, would be to simply store these values in a file on the built-in flash memory presented as a filesystem. Other alternatives involving additional hardware would be an EEPROM or a Micro SD card. Likewise, for connected ESP32 devices, the baseline *could* be stored elsewhere on the network, or in the cloud.
 
 The `Sensirion SGP30 Driver Integration Guide <docs/Sensirion_Gas_Sensors_SGP30_Driver-Integration-Guide_SW_I2C.pdf>`_ suggests that baselines are stored after the first hour of operation, and continue to be stored hourly after that.
 
@@ -167,13 +167,16 @@ Other SGP30 commands are supported by this library through their respective meth
 =========================  ===============================================================================
 Method                     Description
 =========================  ===============================================================================
-:code:`measure_test()`     Runs on-chip selt test
+:code:`measure_test()`     Runs on-chip self test
 :code:`get_feature_set()`  Retrieves feature set of sensor
 :code:`measure_raw()`      Returns raw H2 and Ethanol signals, used for part verification and testing
 :code:`get_serial()`       Retrieves sensor serial
 =========================  ===============================================================================
 
 Main Application
+==================
+
+Command Sequence
 -------------------------------------
 
 The overall command sequence of the SGP30 is described in the `Sensirion SGP30 Datasheet <docs/Sensirion_Gas_Sensors_SGP30_Datasheet.pdf>`_ (shown below). It is recommended that the application utilising this library calls the methods in the designated sequence, with the correct timings.
@@ -190,12 +193,12 @@ In the context of this sequence, the application flow would *probably* look like
 6. (Optional) Commit current baseline to non-volatile memory hourly using :code:`get_iaq_baseline()`.
 7. Repeat steps 4 and 5, at 1 second intervals.
 
-Clearly, the embedded application is likely to perform other tasks during its run. Therefore, the above sequence should be accommodated by the code using synchronous or asynchronous MicroPython techniques. In particular, special attention to be paid to keeping to the 1 second timed measurements.
+Clearly, the embedded application is likely to perform other tasks during its run. Therefore, the above sequence should be accommodated by the code using synchronous or asynchronous MicroPython techniques. In particular, special attention should be paid to keeping to the 1 second timed measurements.
 
 Testing
 ==========
 
-Place the sensor for example above the cooking area in the kitchen, and you should be able to obtain some exciting readings!
+Place the sensor in a "dirty" environment, for example above the cooking area in the kitchen, and you should be able to obtain some exciting readings!
 
 .. image:: docs/sgp30_matplotlit_ppm_ppb_example.png
 
@@ -218,7 +221,7 @@ Note that the script currently:
 
 * Uses test values (made-up) for temperature and humidity for triggering humidity compensation. For ways to include actual readings, see `Humidity Compensation`_.
 * Does not check < 7 day validity of stored baseline. For possible ways to check this, see `Get and Set Baselines`_.
-* Does not enforce 12 hour early operation phase if no baseline is found (just a warning is displayed). This could be achieved by a delay of 12 hours accompanying the warning before measurements start to be taken.
+* Does not enforce 12 hour early operation phase if no baseline is found (just a warning is displayed). This could be achieved by enforcing a delay of 12 hours accompanying the warning before measurements start to be taken.
 
 Used in Conjunction with Deepsleep
 -------------------------------------
@@ -228,7 +231,7 @@ Used in Conjunction with Deepsleep
 
 For experimental testing purposes, the :code:`SGP30` class can be instantiated with the :code:`iaq_init=False` flag set. This will not instruct the SGP30 sensor to initialise its baselines (for example, if the sensor itself has remained powered throughout, even if the microprocessor has not).
 
-This *could* be used in conjunction with a test to see if the ESP32 has been awakened from deepsleep to bypass the sensor calibration and rely solely on stored baselines... although this is so far untested and likely to be not recommended due to earlier points.
+This *could* be used in conjunction with a test to see if the ESP32 has been awakened from deepsleep to bypass the sensor calibration and rely solely on existing baselines... although this is so far untested and likely to be not recommended due to earlier points.
 
 Example - *Potential* Deepsleep Application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -240,9 +243,8 @@ Example - *Potential* Deepsleep Application
 	else:
 	    initialise_sgp30_algo = True
 	sgp30 = uSGP30.SGP30(i2c, iaq_init=initialise_sgp30_algo)
-	# Then, retrieve previous baselines from non-volatile memory...
 
-Blog Post
+Blog Post(s)
 =========================
 
 The usage of this sensor and module is described in the following `Rosie the Red Robot <https://www.rosietheredrobot.com>`_ blog post:
