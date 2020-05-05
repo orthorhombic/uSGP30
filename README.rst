@@ -164,14 +164,14 @@ Additional Commands
 
 Other SGP30 commands are supported by this library through their respective methods.
 
-=================  ===============================================================================
-Method             Description
-=================  ===============================================================================
-measure_test()     Runs on-chip selt test
-get_feature_set()  Retrieves feature set of sensor
-measure_raw()      Returns raw H2 and Ethanol signals, used for part verification and testing
-get_serial()       Retrieves sensor serial
-=================  ===============================================================================
+=========================  ===============================================================================
+Method                     Description
+=========================  ===============================================================================
+:code:`measure_test()`     Runs on-chip selt test
+:code:`get_feature_set()`  Retrieves feature set of sensor
+:code:`measure_raw()`      Returns raw H2 and Ethanol signals, used for part verification and testing
+:code:`get_serial()`       Retrieves sensor serial
+=========================  ===============================================================================
 
 Main Application
 -------------------------------------
