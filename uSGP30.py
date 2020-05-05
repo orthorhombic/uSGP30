@@ -106,7 +106,7 @@ class SGP30:
     """
 
     def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, measure_test=True, iaq_init=True):
-        """ Initialise the sensor and display stats """
+        """ Initialises the sensor and display stats """
         self._i2c = i2c
         if addr not in self._i2c.scan():
             raise IOError("No SGP30 device found on I2C bus")
@@ -127,7 +127,7 @@ class SGP30:
             self.iaq_init()
 
     def iaq_init(self):
-        """ Initialise the IAQ algorithm """
+        """ Initialises the IAQ algorithm """
         self._i2c_read_words_from_cmd(
             SGP30_CMD_IAQ_INIT_HEX,
             SGP30_CMD_IAQ_INIT_MAX_MS,
@@ -135,7 +135,7 @@ class SGP30:
         )
 
     def measure_iaq(self):
-        """ Measure the CO2eq and TVOC """
+        """ Measures the CO2eq and TVOC """
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_MEASURE_IAQ_HEX,
             SGP30_CMD_MEASURE_IAQ_MS,
@@ -143,7 +143,7 @@ class SGP30:
         )
 
     def get_iaq_baseline(self):
-        """ Retreive the IAQ algorithm baseline for CO2eq and TVOC """
+        """ Retreives the IAQ algorithm baseline for CO2eq and TVOC """
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_IAQ_BASELINE_HEX,
             SGP30_CMD_GET_IAQ_BASELINE_MAX_MS,
@@ -151,7 +151,7 @@ class SGP30:
         )
 
     def set_iaq_baseline(self, co2eq, tvoc):
-        """ Set the previously recorded IAQ algorithm baseline for CO2eq and TVOC """
+        """ Sets the previously recorded IAQ algorithm baseline for CO2eq and TVOC """
         if co2eq == 0 and tvoc == 0:
             raise ValueError("Invalid baseline values used")
         buffer = []
@@ -166,7 +166,7 @@ class SGP30:
         )
 
     def set_absolute_humidity(self, absolute_humidity):
-        """ Set absolute humidity compensation. To disable,
+        """ Sets absolute humidity compensation. To disable,
         set 0. """
         buffer = []
         arr = [absolute_humidity >> 8, absolute_humidity & 0xFF]
@@ -179,7 +179,7 @@ class SGP30:
         )
 
     def measure_test(self):
-        """ Run on-chip selt test """
+        """ Runs on-chip selt test """
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_MEASURE_TEST_HEX,
             SGP30_CMD_MEASURE_TEST_MAX_MS,
@@ -187,7 +187,7 @@ class SGP30:
         )[0]
 
     def get_feature_set(self):
-        """ Retrieve feature set of sensor """
+        """ Retrieves feature set of sensor """
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_FEATURE_SET_HEX,
             SGP30_CMD_GET_FEATURE_SET_MAX_MS,
@@ -207,7 +207,7 @@ class SGP30:
     # TODO: Soft Reset (datasheet section 6.4)
 
     def get_serial(self):
-        """ Retrieve sensor serial """
+        """ Retrieves sensor serial """
         serial = self.serial = self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_SERIAL_ID_HEX,
             SGP30_CMD_GET_SERIAL_ID_MAX_MS,
@@ -246,7 +246,7 @@ class SGP30:
         return self.measure_raw()[1]
 
     def _i2c_read_words_from_cmd(self, command, delay, reply_size):
-        """ Run an SGP command query, get a reply and CRC results if necessary """
+        """ Runs an SGP command query, gets a reply and CRC results if necessary """
         self._i2c.writeto(self.addr, bytes(command))
         sleep_ms(delay)
         if not reply_size:

@@ -68,7 +68,7 @@ Example - Measure CO2eq and TVOC
     co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
     print(co2eq_ppm, tvoc_ppb)
 
-Measurements should be taken periodically, for example, in an indefinite :code:`while` loop equipped with suitable delays. A 1 second interval for the actual SGP30 measurements is recommended by the datasheet to facilitate the sensor's operation of its internal dynamic baseline compensation algorithm. This *likely* means that ESP32 deepsleep - where the microcontroller is offline for extended durations - is not conducive to optimal operation of the SGP30 sensor.
+Measurements should be taken periodically, for example, in an indefinite :code:`while` loop equipped with suitable delays. A 1 second interval for the actual SGP30 measurements is recommended by the Sensirion SGP30 Datasheet to facilitate the sensor's operation of its internal dynamic baseline compensation algorithm. This *likely* means that ESP32 deepsleep - where the microcontroller is offline for extended durations - is not conducive to optimal operation of the SGP30 sensor.
 
 Example - Measure CO2eq and TVOC Indefinitely
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,7 +98,7 @@ Optionally, the SGP30 allows its internal algorithm to be compensated *if* provi
 .. warning::
 	Note that the exact 8.8 fixed point value (2 byte word) outputted by the :code:`convert_r_to_a_humidity()` function needs to be applied to the sensor. To see what the actual (readable) g/m^3 absolute humidity value is, use the :code:`fixed_point=False` flag when calling `convert_r_to_a_humidity()` but **DO NOT** apply this value directly to the sensor.
 
-The equation for the conversion is documented in the SGP30 datasheet.
+The equation for the conversion is documented in the Sensirion SGP30 Datasheet.
 
 Humidity compensation is disabled by default after power-up / soft reset (until a value is explicitly set), and can be disabled again during operation by setting a value of 0.
 
@@ -125,7 +125,7 @@ Current algorithm baselines calculated by the SGP30 sensor during the course of 
 
 The simplest way to achieve this for an offline ESP32 device, with no additional hardware, would be to simply store these values in a file on the built-in flash memory presented as a filesystem. Other alternatives involving additional hardware would be an EEPROM or MicroSD devices. Likewise, for connected ESP32 devices, the baseline *could* be stored elsewhere on the network.
 
-The driver integration guide suggests that baselines are stored after the first hour of operation, and continue to be stored hourly after that.
+The Sensirion SGP30 Driver Integration Guide suggests that baselines are stored after the first hour of operation, and continue to be stored hourly after that.
 
 .. note::
 	Baselines are only valid for 7 days. In other words, if the sensor has been powered off for over 7 days (or a baseline hasn't been retrieved during that timeframe), the 12-hour early operation phase would be required to recalibrate the sensor regardless of whether a baseline exists.
@@ -159,16 +159,16 @@ Other SGP30 commands are supported by this library through their respective meth
 =================  ===============================================================================
 Method             Description
 =================  ===============================================================================
-measure_test()     Run on-chip selt test
-get_feature_set()  Retrieve feature set of sensor
+measure_test()     Runs on-chip selt test
+get_feature_set()  Retrieves feature set of sensor
 measure_raw()      Returns raw H2 and Ethanol signals, used for part verification and testing
-get_serial()       Retrieve sensor serial
+get_serial()       Retrieves sensor serial
 =================  ===============================================================================
 
 Main Application
 -------------------------------------
 
-The overall command sequence of the SGP30 is described in the datasheet (shown below). It is recommended that the application utilising this library calls the methods in the designated sequence, with the correct timings.
+The overall command sequence of the SGP30 is described in the Sensirion SGP30 Datasheet (shown below). It is recommended that the application utilising this library calls the methods in the designated sequence, with the correct timings.
 
 .. image:: docs/sgp30_command_sequence.png
 
