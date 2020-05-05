@@ -104,7 +104,7 @@ Humidity Compensation
 Optionally, the SGP30 allows its internal algorithm to be compensated *if* provided with actual absolute humidity. If you have a relative humidity (%) and temperature (°C) sensors, the :code:`convert_r_to_a_humidity()` function available in the :code:`uSGP30` module can be used to calcuate the absolute humidity. This value can then be applied to the sensor using the :code:`set_absolute_humidity()` method.
 
 .. warning::
-	Note that the exact 8.8 fixed point value (2 byte word) outputted by the :code:`convert_r_to_a_humidity()` function needs to be applied to the sensor. To see what the actual (readable) g/m^3 absolute humidity value is, use the :code:`fixed_point=False` flag when calling :code:``convert_r_to_a_humidity()` but **DO NOT** apply this value directly to the sensor.
+	Note that the exact 8.8 fixed point value (2 byte word) outputted by the :code:`convert_r_to_a_humidity()` function needs to be applied to the sensor. To see what the actual (readable) g/m^3 absolute humidity value is, use the :code:`fixed_point=False` flag when calling :code:`convert_r_to_a_humidity()` but **DO NOT** apply this value directly to the sensor.
 
 The equation for the conversion is documented in the `Sensirion SGP30 Datasheet <docs/Sensirion_Gas_Sensors_SGP30_Datasheet.pdf>`_.
 
