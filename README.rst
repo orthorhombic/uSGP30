@@ -31,6 +31,13 @@ Depending on the SGP30 breakout board you have, options for power supply (and ma
 
 .. image:: docs/pimoroni_sgp30_pins.jpg
 
+Installation
+---------------
+
+Simply upload the :code:`uSGP30.py` file to ESP32 MicroPython operating system and :code:`import` the module.
+
+Optionally, upload the :code:`uSGP30_test.py` file to execute the test script. See `Testing`_ for more information.
+
 Operation
 ============
 
@@ -44,6 +51,7 @@ Example - Instantiate I2C and uSGP30 Classes
 .. code-block:: python
 
 	import uSGP30
+	import machine
 
 	I2C_SCL_GPIO = const(18)
 	I2C_SDA_GPIO = const(19)
@@ -147,7 +155,7 @@ Example - Get and Set Baselines
 	# After power up / soft reset...
 	with open(BASELINE_FILE, "r") as file:
 	    current_baseline = ujson.loads(file.read())
-	sgp30.set_iaq_baseline(current_baseline)
+	sgp30.set_iaq_baseline(current_baseline[0], current_baseline[1])
 
 An additional check to see if the last baseline was stored in the last 7 days would require the ESP32 device to have the correct time (either via NTP or RTC), and that this timestamp is stored together with the baseline and checked before committing to the sensor after power-up / soft reset.
 
@@ -193,6 +201,22 @@ Place the sensor for example above the cooking area in the kitchen, and you shou
 
 For data to be available outside of the embedded device, use MQTT to publish the readings over the network or store them locally on a SD card.
 
+A test script :code:`uSGP30_test.py` is included in this library.
+
+Example - Run uSGP30_test.py Test Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+	import uSGP30_test
+	uSGP30_test.run()
+
+Note that the script currently:
+
+* Uses test values (made-up) for temperature and humidity for triggering humidity compensation. For ways to include actual readings, see `Humidity Compensation`_.
+* Does not check < 7 day validity of stored baseline. For possible ways to check this, see `Get and Set Baselines`_.
+* Does not enforce 12 hour early operation phase if no baseline is found (just a warning is displayed). This could be achieved by a delay of 12 hours accompanying the warning before measurements start to be taken.
+
 Used in Conjunction with Deepsleep
 -------------------------------------
 
@@ -207,8 +231,6 @@ Example - *Potential* Deepsleep Application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
-	
-	import machine
 	
 	if machine.reset_cause() == machine.DEEPSLEEP_RESET:
 	    initialise_sgp30_algo = False
