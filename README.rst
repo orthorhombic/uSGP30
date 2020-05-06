@@ -229,7 +229,7 @@ Sample Application
 
 The following example application uses the BME280 and SGP30 sensors, and publishes MQTT messages to AWS IoT.
 
-`main.py <https://gist.github.com/fantasticdonkey/2b0e6b3e045ba451d3b3b4cea5558396`_
+`main.py <https://gist.github.com/fantasticdonkey/2b0e6b3e045ba451d3b3b4cea5558396>`_
 
 Example - Run uSGP30_test.py Test Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
