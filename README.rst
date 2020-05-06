@@ -83,7 +83,7 @@ Example - Measure CO2eq and TVOC Indefinitely
 
 .. code-block:: python
 
-	import time
+	import utime
 
 	while True:
 	    co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
@@ -91,7 +91,7 @@ Example - Measure CO2eq and TVOC Indefinitely
 	        "Carbon Dioxide Equivalent (ppm): " + str(co2eq_ppm) + "\n" +
 	        "Total Volatile Organic Compound (ppb): " + str(tvoc_ppb)
 	    )
-	    time.sleep(1)
+	    utime.sleep(1)
 
 .. image:: docs/sgp30_iaq_loop.png
 
@@ -159,6 +159,21 @@ Example - Get and Set Baselines
 
 An additional check to see if the last baseline was stored in the last 7 days would require the ESP32 device to have the correct time (either via NTP or RTC), and that this timestamp is stored together with the baseline and checked before committing to the sensor after power-up / soft reset.
 
+For example, before committing the baseline to non-volatile memory, you could append the current timestamp to the list of baselines. The below example uses the :code:`utime.now()` function to retrieve number of seconds since the *Epoch*.
+
+.. code-block:: python
+
+	current_baseline = sgp30.get_iaq_baseline()
+	current_baseline.append(utime.time())
+	# Write current_baseline to non-volatile memory...
+
+The timestamp :code:`current_baseline[2]` could then be checked after power up / soft reset to see if its younger than 7 days. Values :code:`current_baseline[0]` and :code:`current_baseline[1]` would continue to hold the baseline values.
+
+.. code-block:: python
+
+	#[co2eq baseline, tvoc baseline, timestamp]
+	[4371, 2279, 642105588]
+
 Additional Commands
 ------------------------
 
@@ -208,6 +223,13 @@ Test Script
 -------------------------------------
 
 A test script :code:`uSGP30_test.py` is included in this library.
+
+Sample Application
+-------------------------------------
+
+The following example application uses the BME280 and SGP30 sensors, and publishes MQTT messages to AWS IoT.
+
+`main.py <https://gist.github.com/fantasticdonkey/2b0e6b3e045ba451d3b3b4cea5558396`_
 
 Example - Run uSGP30_test.py Test Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
