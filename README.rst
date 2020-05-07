@@ -131,7 +131,7 @@ Get and Set Baselines
 
 Current algorithm baselines calculated by the SGP30 sensor during the course of its operation can be read using the :code:`get_iaq_baseline()` method. In order for this baseline to persist after subsequent sensor power-ups or soft resets, the baseline values can be retrieved and stored in non-volatile memory, and set after the next power-up / soft reset using the :code:`set_iaq_baseline()` method. If not, a 12-hour early operation phase is required again for the sensor to re-establish its baseline. Only baselines *younger* than a week is valid.
 
-The simplest way to achieve this for an offline ESP32 device, with no additional hardware, would be to simply store these values in a file on the built-in flash memory presented as a filesystem. Other alternatives involving additional hardware would be an EEPROM or a Micro SD card. Likewise, for connected ESP32 devices, the baseline *could* be stored elsewhere on the network, or in the cloud.
+The simplest way to achieve this for an offline ESP32 device, with no additional hardware, would be to simply store these values in a file on the built-in flash memory presented as a filesystem. Other alternatives involving additional hardware would be an EEPROM or a SD card. Likewise, for connected ESP32 devices, the baseline *could* be stored elsewhere on the network, or in the cloud.
 
 The `Sensirion SGP30 Driver Integration Guide <docs/Sensirion_Gas_Sensors_SGP30_Driver-Integration-Guide_SW_I2C.pdf>`_ suggests that baselines are stored after the first hour of operation, and continue to be stored hourly after that.
 
@@ -159,7 +159,7 @@ Example - Get and Set Baselines
 
 An additional check to see if the last baseline was stored in the last 7 days would require the ESP32 device to have the correct time (either via NTP or RTC), and that this timestamp is stored together with the baseline and checked before committing to the sensor after power-up / soft reset.
 
-For example, before committing the baseline to non-volatile memory, you could append the current timestamp to the list of baselines. The below example uses the :code:`utime.now()` function to retrieve number of seconds since the *Epoch*.
+For example, before committing the baseline to non-volatile memory, you could append the current timestamp to the list of baselines. The below example uses the MicroPython built-in :code:`utime.now()` function to retrieve number of seconds since the *Epoch*.
 
 .. code-block:: python
 
@@ -167,12 +167,15 @@ For example, before committing the baseline to non-volatile memory, you could ap
 	current_baseline.append(utime.time())
 	# Write current_baseline to non-volatile memory...
 
-The timestamp :code:`current_baseline[2]` could then be checked after power up / soft reset to see if its younger than 7 days. Values :code:`current_baseline[0]` and :code:`current_baseline[1]` would continue to hold the baseline values.
+The timestamp :code:`current_baseline[2]` could then be checked after power-up / soft reset to see if its younger than 7 days. Values :code:`current_baseline[0]` and :code:`current_baseline[1]` would continue to hold the baseline values.
 
 .. code-block:: python
 
 	#[co2eq baseline, tvoc baseline, timestamp]
 	[4371, 2279, 642105588]
+
+.. note::
+	To reiterate, this technique is only valid if the ESP32's internal clock is synchronised to an external time source during power-on. Without this, the ESP32 will default to the start of the *Epoch* each time it is restarted, and therefore invalidating your previously stored timestamp. If the device has network connectivity, :code:`ntptime.settime()` could be used to reference internet NTP to obtain and set the correct system time. Alternatively, an external Real Time Clock (RTC) such as a `DS3231 <https://github.com/peterhinch/micropython-samples/tree/master/DS3231>`_ could be used for offline operations.
 
 Additional Commands
 ------------------------
@@ -187,6 +190,9 @@ Method                     Description
 :code:`measure_raw()`      Returns raw H2 and Ethanol signals, used for part verification and testing
 :code:`get_serial()`       Retrieves sensor serial
 =========================  ===============================================================================
+
+.. note::
+	Get and set TVOC inceptive baseline commands have not yet been implemented by this library.
 
 Main Application
 ==================
@@ -210,6 +216,13 @@ In the context of this sequence, the application flow would *probably* look like
 
 Clearly, the embedded application is likely to perform other tasks during its run. Therefore, the above sequence should be accommodated by the code using synchronous or asynchronous MicroPython techniques. In particular, special attention should be paid to keeping to the 1 second timed measurements.
 
+Sample Application
+-------------------------------------
+
+The following example application uses the BME280 and SGP30 sensors, and publishes MQTT messages to AWS IoT.
+
+`main.py <https://gist.github.com/fantasticdonkey/2b0e6b3e045ba451d3b3b4cea5558396>`_
+
 Testing
 ==========
 
@@ -224,12 +237,6 @@ Test Script
 
 A test script :code:`uSGP30_test.py` is included in this library.
 
-Sample Application
--------------------------------------
-
-The following example application uses the BME280 and SGP30 sensors, and publishes MQTT messages to AWS IoT.
-
-`main.py <https://gist.github.com/fantasticdonkey/2b0e6b3e045ba451d3b3b4cea5558396>`_
 
 Example - Run uSGP30_test.py Test Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,7 +248,7 @@ Example - Run uSGP30_test.py Test Script
 
 Note that the script currently:
 
-* Uses test values (made-up) for temperature and humidity for triggering humidity compensation. For ways to include actual readings, see `Humidity Compensation`_.
+* Uses test values (constants) for temperature and humidity for triggering humidity compensation. For ways to include actual readings, see `Humidity Compensation`_.
 * Does not check < 7 day validity of stored baseline. For possible ways to check this, see `Get and Set Baselines`_.
 * Does not enforce 12 hour early operation phase if no baseline is found (just a warning is displayed). This could be achieved by enforcing a delay of 12 hours accompanying the warning before measurements start to be taken.
 
