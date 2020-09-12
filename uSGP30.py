@@ -66,7 +66,7 @@ SGP30_CMD_MEASURE_IAQ_MS = const(12)
 SGP30_CMD_GET_IAQ_BASELINE_HEX = [0x20, 0x15]
 SGP30_CMD_GET_IAQ_BASELINE_WORDS = const(2)
 SGP30_CMD_GET_IAQ_BASELINE_MAX_MS = const(10)
-SGP30_CMD_SET_IAQ_BASELINE_HEX = [0x20, 0x1e]
+SGP30_CMD_SET_IAQ_BASELINE_HEX = [0x20, 0x1E]
 SGP30_CMD_SET_IAQ_BASELINE_WORDS = const(0)
 SGP30_CMD_SET_IAQ_BASELINE_MAX_MS = const(10)
 SGP30_CMD_SET_ABSOLUTE_HUMIDITY_HEX = [0x20, 0x61]
@@ -75,13 +75,13 @@ SGP30_CMD_SET_ABSOLUTE_HUMIDITY_MAX_MS = const(10)
 SGP30_CMD_MEASURE_TEST_HEX = [0x20, 0x32]
 SGP30_CMD_MEASURE_TEST_WORDS = const(1)
 SGP30_CMD_MEASURE_TEST_MAX_MS = const(220)
-SGP30_CMD_GET_FEATURE_SET_HEX = [0x20, 0x2f]
+SGP30_CMD_GET_FEATURE_SET_HEX = [0x20, 0x2F]
 SGP30_CMD_GET_FEATURE_SET_WORDS = const(1)
 SGP30_CMD_GET_FEATURE_SET_MAX_MS = const(10)
 SGP30_CMD_MEASURE_RAW_HEX = [0x20, 0x50]
 SGP30_CMD_MEASURE_RAW_WORDS = const(2)
 SGP30_CMD_MEASURE_RAW_MAX_MS = const(25)
-SGP30_CMD_GET_TVOC_INCEPTIVE_HEX = [0x20, 0xb3]
+SGP30_CMD_GET_TVOC_INCEPTIVE_HEX = [0x20, 0xB3]
 SGP30_CMD_GET_TVOC_INCEPTIVE_WORDS = const(1)
 SGP30_CMD_GET_TVOC_INCEPTIVE_MAX_MS = const(10)
 SGP30_CMD_SET_TVOC_BASELINE_HEX = [0x20, 0x77]
@@ -95,6 +95,7 @@ SGP30_CMD_GET_SERIAL_ID_HEX = [0x36, 0x82]
 SGP30_CMD_GET_SERIAL_ID_WORDS = const(3)
 SGP30_CMD_GET_SERIAL_ID_MAX_MS = const(10)
 
+
 class SGP30:
     """
     A driver for the SGP30 gas sensor.
@@ -105,7 +106,9 @@ class SGP30:
     :param boolean iaq_init: (optional) Whether to initialise SGP30 algorithm / baseline.
     """
 
-    def __init__(self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, measure_test=True, iaq_init=True):
+    def __init__(
+        self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, measure_test=True, iaq_init=True
+    ):
         """ Initialises the sensor and display stats """
         self._i2c = i2c
         if addr not in self._i2c.scan():
@@ -117,11 +120,18 @@ class SGP30:
             if SGP30_MEASURE_TEST_PASS != self.measure_test():
                 raise RuntimeError("Device failed the on-chip test")
         print(
-            "SGP30 device discovered...\n" +
-            "I2C address: " + str(self.addr) + "\n" +
-            "Serial ID: " + str(self.serial) + "\n" +
-            "Feature set: " + str(self.feature_set) + "\n" +
-            "Initialise algo: " + str(iaq_init)
+            "SGP30 device discovered...\n"
+            + "I2C address: "
+            + str(self.addr)
+            + "\n"
+            + "Serial ID: "
+            + str(self.serial)
+            + "\n"
+            + "Feature set: "
+            + str(self.feature_set)
+            + "\n"
+            + "Initialise algo: "
+            + str(iaq_init)
         )
         if iaq_init:
             self.iaq_init()
@@ -129,9 +139,7 @@ class SGP30:
     def iaq_init(self):
         """ Initialises the IAQ algorithm """
         self._i2c_read_words_from_cmd(
-            SGP30_CMD_IAQ_INIT_HEX,
-            SGP30_CMD_IAQ_INIT_MAX_MS,
-            SGP30_CMD_IAQ_INIT_WORDS
+            SGP30_CMD_IAQ_INIT_HEX, SGP30_CMD_IAQ_INIT_MAX_MS, SGP30_CMD_IAQ_INIT_WORDS
         )
 
     def measure_iaq(self):
@@ -139,7 +147,7 @@ class SGP30:
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_MEASURE_IAQ_HEX,
             SGP30_CMD_MEASURE_IAQ_MS,
-            SGP30_CMD_MEASURE_IAQ_WORDS
+            SGP30_CMD_MEASURE_IAQ_WORDS,
         )
 
     def get_iaq_baseline(self):
@@ -147,7 +155,7 @@ class SGP30:
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_IAQ_BASELINE_HEX,
             SGP30_CMD_GET_IAQ_BASELINE_MAX_MS,
-            SGP30_CMD_GET_IAQ_BASELINE_WORDS
+            SGP30_CMD_GET_IAQ_BASELINE_WORDS,
         )
 
     def set_iaq_baseline(self, co2eq, tvoc):
@@ -162,7 +170,7 @@ class SGP30:
         self._i2c_read_words_from_cmd(
             SGP30_CMD_SET_IAQ_BASELINE_HEX + buffer,
             SGP30_CMD_SET_IAQ_BASELINE_MAX_MS,
-            SGP30_CMD_SET_IAQ_BASELINE_WORDS
+            SGP30_CMD_SET_IAQ_BASELINE_WORDS,
         )
 
     def set_absolute_humidity(self, absolute_humidity):
@@ -173,9 +181,9 @@ class SGP30:
         arr.append(generate_crc(arr))
         buffer += arr
         self._i2c_read_words_from_cmd(
-            SGP30_CMD_SET_IAQ_BASELINE_HEX + buffer,
-            SGP30_CMD_SET_IAQ_BASELINE_MAX_MS,
-            SGP30_CMD_SET_IAQ_BASELINE_WORDS
+            SGP30_CMD_SET_ABSOLUTE_HUMIDITY_HEX + buffer,
+            SGP30_CMD_SET_ABSOLUTE_HUMIDITY_MAX_MS,
+            SGP30_CMD_SET_ABSOLUTE_HUMIDITY_WORDS,
         )
 
     def measure_test(self):
@@ -183,7 +191,7 @@ class SGP30:
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_MEASURE_TEST_HEX,
             SGP30_CMD_MEASURE_TEST_MAX_MS,
-            SGP30_CMD_MEASURE_TEST_WORDS
+            SGP30_CMD_MEASURE_TEST_WORDS,
         )[0]
 
     def get_feature_set(self):
@@ -191,7 +199,7 @@ class SGP30:
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_FEATURE_SET_HEX,
             SGP30_CMD_GET_FEATURE_SET_MAX_MS,
-            SGP30_CMD_GET_FEATURE_SET_WORDS
+            SGP30_CMD_GET_FEATURE_SET_WORDS,
         )[0]
 
     def measure_raw(self):
@@ -199,7 +207,7 @@ class SGP30:
         return self._i2c_read_words_from_cmd(
             SGP30_CMD_MEASURE_RAW_HEX,
             SGP30_CMD_MEASURE_RAW_MAX_MS,
-            SGP30_CMD_MEASURE_RAW_WORDS
+            SGP30_CMD_MEASURE_RAW_WORDS,
         )
 
     # TODO: Get TVOC inceptive baseline
@@ -211,7 +219,7 @@ class SGP30:
         serial = self.serial = self._i2c_read_words_from_cmd(
             SGP30_CMD_GET_SERIAL_ID_HEX,
             SGP30_CMD_GET_SERIAL_ID_MAX_MS,
-            SGP30_CMD_GET_SERIAL_ID_WORDS
+            SGP30_CMD_GET_SERIAL_ID_WORDS,
         )
         return hex(int.from_bytes(bytearray(serial), "large"))
 
@@ -251,16 +259,17 @@ class SGP30:
         sleep_ms(delay)
         if not reply_size:
             return None
-        crc_result = bytearray(reply_size*(SGP30_WORD_LEN+1))
+        crc_result = bytearray(reply_size * (SGP30_WORD_LEN + 1))
         self._i2c.readfrom_into(self.addr, crc_result)
         result = []
         for i in range(reply_size):
-            word = [crc_result[3*i], crc_result[3*i+1]]
-            crc = crc_result[3*i+2]
+            word = [crc_result[3 * i], crc_result[3 * i + 1]]
+            crc = crc_result[3 * i + 2]
             if generate_crc(word) != crc:
                 raise RuntimeError("CRC Error")
             result.append(word[0] << 8 | word[1])
         return result
+
 
 def generate_crc(data):
     """ 8-bit CRC algorithm for checking data.
@@ -276,12 +285,13 @@ def generate_crc(data):
                 crc <<= 1
     return crc & 0xFF
 
+
 def convert_r_to_a_humidity(temp_c, r_humidity_perc, fixed_point=True):
     """ Converts relative to absolute humidity as per the equation
     found in datasheet """
     a_humidity_gm3 = 216.7 * (
-        (r_humidity_perc / 100 * 6.112 * exp(17.62 * temp_c / (243.12 + temp_c))) /
-        (273.15 + temp_c)
+        (r_humidity_perc / 100 * 6.112 * exp(17.62 * temp_c / (243.12 + temp_c)))
+        / (273.15 + temp_c)
     )
     # Return in 8.8 bit fixed point format (for setting humidity compensation), if not
     # simply return the calculated value in g/m^3
