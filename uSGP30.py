@@ -107,7 +107,7 @@ class SGP30:
     """
 
     def __init__(
-        self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, measure_test=True, iaq_init=True
+        self, i2c, addr=SGP30_DEFAULT_I2C_ADDR, measure_test=False, iaq_init=True
     ):
         """ Initialises the sensor and display stats """
         self._i2c = i2c

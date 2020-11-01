@@ -12,15 +12,16 @@ import ujson
 import utime
 
 BASELINE_FILE = "sgp30_iaq_baseline.txt"
-I2C_SCL_GPIO = const(18)
-I2C_SDA_GPIO = const(19)
+I2C_SCL_GPIO = const(5)
+I2C_SDA_GPIO = const(4)
 I2C_FREQ = const(400000)
-MEASURE_INTERVAL_MS = const(1000)       # Minutely measurements
-BASELINE_INTERVAL_MS = const(3600000)   # Hourly baseline commits
+MEASURE_INTERVAL_MS = const(1000)  # Minutely measurements
+BASELINE_INTERVAL_MS = const(3600000)  # Hourly baseline commits
 SGP30_INIT_TIME_MS = const(15000)
 # Made-up test values
 TEST_TEMP_C = const(25)
 TEST_R_HUMIDITY_PERC = const(50)
+
 
 def run():
     """ Runs test application """
@@ -28,7 +29,7 @@ def run():
     i2c = machine.I2C(
         scl=machine.Pin(I2C_SCL_GPIO, machine.Pin.OUT),
         sda=machine.Pin(I2C_SDA_GPIO, machine.Pin.OUT),
-        freq=I2C_FREQ
+        freq=I2C_FREQ,
     )
     sgp30 = uSGP30.SGP30(i2c)
     # Sensor initialisation time
@@ -38,13 +39,17 @@ def run():
             current_baseline = ujson.loads(file.read())
     except OSError as exception:
         print(exception)
-        print("No valid baseline found. You should wait 12 hours for calibration before use.")
+        print(
+            "No valid baseline found. You should wait 12 hours for calibration before use."
+        )
     else:
         print("Baseline found:", current_baseline)
         sgp30.set_iaq_baseline(current_baseline[0], current_baseline[1])
     finally:
         # Set absolute humidity
-        a_humidity_perc = uSGP30.convert_r_to_a_humidity(TEST_TEMP_C, TEST_R_HUMIDITY_PERC)
+        a_humidity_perc = uSGP30.convert_r_to_a_humidity(
+            TEST_TEMP_C, TEST_R_HUMIDITY_PERC
+        )
         sgp30.set_absolute_humidity(a_humidity_perc)
     # Main application loop
     last_baseline_commit_ms = utime.ticks_ms()
@@ -52,11 +57,17 @@ def run():
         last_iaq_check_ms = utime.ticks_ms()
         co2eq_ppm, tvoc_ppb = sgp30.measure_iaq()
         print(
-            "Carbon Dioxide Equivalent (ppm): " + str(co2eq_ppm) + "\n" +
-            "Total Volatile Organic Compound (ppb): " + str(tvoc_ppb)
-            )
+            "Carbon Dioxide Equivalent (ppm): "
+            + str(co2eq_ppm)
+            + "\n"
+            + "Total Volatile Organic Compound (ppb): "
+            + str(tvoc_ppb)
+        )
+        print(sgp30.get_iaq_baseline())
         # Set absolute humidity
-        a_humidity_perc = uSGP30.convert_r_to_a_humidity(TEST_TEMP_C, TEST_R_HUMIDITY_PERC)
+        a_humidity_perc = uSGP30.convert_r_to_a_humidity(
+            TEST_TEMP_C, TEST_R_HUMIDITY_PERC
+        )
         sgp30.set_absolute_humidity(a_humidity_perc)
         if utime.ticks_ms() - last_baseline_commit_ms > BASELINE_INTERVAL_MS:
             # Get current baseline and store on flash
